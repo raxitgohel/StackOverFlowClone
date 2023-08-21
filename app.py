@@ -19,10 +19,16 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(80), nullable=False, unique=True)
     password_hash = db.Column(db.String(128))
 
+    def __repr__(self):
+            return '<Hello, %r>' %self.username
+
 class Question(db.Model):
     qid = db.Column(db.Integer, primary_key=True, autoincrement=True)
     qusername = db.Column(db.String(50), nullable=False, unique=True)
     qcontent = db.Column(db.String(), nullable = False)
+
+    def __repr__(self):
+            return '<Question created: , %r>' %self.qcontent
 
 class CommentStore(db.Model):
     cid = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -30,6 +36,9 @@ class CommentStore(db.Model):
     question_id = db.Column(db.Integer)
     comment = db.Column(db.String(), nullable = True)
     vote = db.Column(db.Integer(), nullable = True)
+
+    def __repr__(self):
+            return '<Comment: %r, Vote: %r>' %self.comment %self.vote
 
 
 
@@ -48,8 +57,7 @@ def create_user():
         db.session.commit()
         print('User', username, ' created')
 
-        def __repr__(self):
-            return '<Hello, %r' %self.username
+        return username
     
 @app.route('/create_question', methods=["GET", "POST"])
 def create_question():
@@ -61,6 +69,7 @@ def create_question():
             question = Question(qusername = user.username, qcontent = qcontent)
             db.session.add(question)
             db.session.commit()
+            return qcontent
 
 @app.route('/update_question', methods = ["GET", "POST"])
 def update_question():
